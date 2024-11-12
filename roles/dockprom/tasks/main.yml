@@ -1,0 +1,42 @@
+# roles/dockprom/tasks/main.yml
+
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+    update_cache: yes
+
+- name: Install Docker Compose
+  apt:
+    name: docker-compose
+    state: present
+    update_cache: yes
+
+- name: Clone Dockprom repository
+  ansible.builtin.git:
+    repo: "https://github.com/stefanprodan/dockprom.git"
+    dest: "{{ dockprom_work_dir }}"
+    update: yes
+  become_user: monitoring  # Ensure the repo is cloned with the right user permissions
+
+- name: Copy Prometheus configuration
+  ansible.builtin.template:
+    src: templates/prometheus.yml.j2
+    dest: "{{ dockprom_work_dir }}/prometheus/prometheus.yml"
+    owner: monitoring
+    group: monitoring
+    mode: '0644'
+
+- name: Ensure monitoring user owns Dockprom directory
+  ansible.builtin.file:
+    path: "{{ dockprom_work_dir }}"
+    owner: monitoring
+    group: monitoring
+    recurse: yes
+    state: directory
+
+- name: Start Dockprom with Docker Compose
+  ansible.builtin.shell: |
+    docker-compose up -d
+  args:
+    chdir: "{{ dockprom_work_dir }}"

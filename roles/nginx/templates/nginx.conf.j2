@@ -1,0 +1,8 @@
+# roles/nginx/templates/nginx.conf.j2
+
+server {
+  listen 80;
+  server_name {{ ansible_hostname }};
+  root /var/www/html;
+  index index.html;
+}

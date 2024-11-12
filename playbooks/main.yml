@@ -1,0 +1,12 @@
+---
+- name: Setup and Configure Services
+  hosts: all
+  become: true
+  gather_facts: true
+  import_playbook: setup_services.yml
+
+- name: Deploy Monitoring Stack
+  hosts: monitoring_server
+  become: true
+  gather_facts: true
+  import_playbook: deploy_monitoring.yml

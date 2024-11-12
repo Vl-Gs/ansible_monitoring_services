@@ -1,0 +1,10 @@
+# playbooks/setup_services.yml
+
+- name: Set up services on servers
+  hosts: all
+  become: true
+  roles:
+    - nginx
+    - mysql
+    - redis
+    # Add additional roles as needed

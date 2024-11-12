@@ -1,0 +1,11 @@
+# playbooks/deploy_monitoring.yml
+
+- name: Install Docker and configure Dockprom
+  hosts: monitoring_server
+  become: true
+  vars:
+    project_root: "{{ playbook_dir | dirname }}"  # Define project root directory
+  roles:
+    - role: docker
+    - role: dockprom
+      dockprom_work_dir: "{{ project_root }}/dockprom"  # Pass the working directory to dockprom

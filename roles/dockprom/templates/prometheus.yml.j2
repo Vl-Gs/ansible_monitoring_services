@@ -1,0 +1,25 @@
+# roles/dockprom/templates/prometheus.yml.j2
+
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'nginx'
+    static_configs:
+      {% for host in groups['nginx_servers'] %}
+      - targets: ['{{ hostvars[host].ansible_host }}:9113']
+      {% endfor %}
+
+  - job_name: 'mysql'
+    static_configs:
+      {% for host in groups['mysql_servers'] %}
+      - targets: ['{{ hostvars[host].ansible_host }}:9104']
+      {% endfor %}
+
+  - job_name: 'redis'
+    static_configs:
+      {% for host in groups['redis_servers'] %}
+      - targets: ['{{ hostvars[host].ansible_host }}:9121']
+      {% endfor %}
+
+  # Add more jobs as needed for other services
